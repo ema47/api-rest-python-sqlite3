@@ -1,75 +1,67 @@
-"""
 
-  ____          _____               _ _           _       
- |  _ \        |  __ \             (_) |         | |      
- | |_) |_   _  | |__) |_ _ _ __ _____| |__  _   _| |_ ___ 
- |  _ <| | | | |  ___/ _` | '__|_  / | '_ \| | | | __/ _ \
- | |_) | |_| | | |  | (_| | |   / /| | |_) | |_| | ||  __/
- |____/ \__, | |_|   \__,_|_|  /___|_|_.__/ \__, |\__\___|
-         __/ |                               __/ |        
-        |___/                               |___/         
-    
-____________________________________
-/ Si necesitas ayuda, contáctame en \
-\ https://parzibyte.me               /
- ------------------------------------
-        \   ^__^
-         \  (oo)\_______
-            (__)\       )\/\
-                ||----w |
-                ||     ||
-Creado por Parzibyte (https://parzibyte.me). Este encabezado debe mantenerse intacto,
-excepto si este es un proyecto de un estudiante.
-"""
-"""
-    API REST con Python 3 y SQLite 3
-    By Parzibyte: 
-    ** https://parzibyte.me/blog **
-"""
 from flask import Flask, jsonify, request
-import game_controller
+import product_controller
 from db import create_tables
 
 app = Flask(__name__)
 
 
-@app.route('/games', methods=["GET"])
-def get_games():
-    games = game_controller.get_games()
-    return jsonify(games)
+@app.route('/product', methods=["GET"])
+def get_products():
+    products = product_controller.get_products()
+    return jsonify(products)
 
 
-@app.route("/game", methods=["POST"])
-def insert_game():
-    game_details = request.get_json()
-    name = game_details["name"]
-    price = game_details["price"]
-    rate = game_details["rate"]
-    result = game_controller.insert_game(name, price, rate)
+@app.route("/product", methods=["POST"])
+def insert_product():
+    product_details = request.get_json()
+    name = product_details["name"]
+    producType=product_details["producType"]
+    price = product_details["price"]
+    rating = product_details["rating"]
+    image=product_details["image"]
+    description=product_details["description"]
+    result = product_controller.insert_product(name, producType, price, rating, image, description)
+    return jsonify(result)
+
+"""
+@app.route("/product", methods=["PUT"])
+def update_product():
+    product_details = request.get_json()
+    id = product_details["id"]
+    name = product_details["name"]
+    producType=product_details["producType"]
+    price = product_details["price"]
+    rating = product_details["rating"]
+    image=product_details["image"]
+    description=product_details["description"]
+    result = product_controller.update_product(id, name, producType, price, rating, image, description)
+    return jsonify(result)
+"""
+
+@app.route("/product/<id>", methods=["PUT"])
+def update_product(id):
+    product_details = request.get_json()
+    """id = product_details["id"]"""
+    name = product_details["name"]
+    producType=product_details["producType"]
+    price = product_details["price"]
+    rating = product_details["rating"]
+    image=product_details["image"]
+    description=product_details["description"]
+    result = product_controller.update_product(id, name, producType, price, rating, image, description)
+    return jsonify(result)
+
+@app.route("/product/<id>", methods=["DELETE"])
+def delete_product(id):
+    result = product_controller.delete_product(id)
     return jsonify(result)
 
 
-@app.route("/game", methods=["PUT"])
-def update_game():
-    game_details = request.get_json()
-    id = game_details["id"]
-    name = game_details["name"]
-    price = game_details["price"]
-    rate = game_details["rate"]
-    result = game_controller.update_game(id, name, price, rate)
-    return jsonify(result)
-
-
-@app.route("/game/<id>", methods=["DELETE"])
-def delete_game(id):
-    result = game_controller.delete_game(id)
-    return jsonify(result)
-
-
-@app.route("/game/<id>", methods=["GET"])
-def get_game_by_id(id):
-    game = game_controller.get_by_id(id)
-    return jsonify(game)
+@app.route("/product/<id>", methods=["GET"])
+def get_product_by_id(id):
+    product = product_controller.get_by_id(id)
+    return jsonify(product)
 
 """
 Enable CORS. Disable it if you don't need CORS
